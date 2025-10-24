@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Sentry - Fake Website Detection</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --success-color: #22c55e;
+            --warning-color: #eab308;
+            --danger-color: #ef4444;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            --card-gradient: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: var(--card-gradient);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: calc(var(--border-radius) - 4px);
+            font-size: 1rem;
+            transition: var(--transition);
+            min-height: 180px;
+            resize: vertical;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: block;
+            margin: 2rem auto 0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -1px rgba(0,0,0,0.15), 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .results {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .results h2 {
+            font-size: 1.75rem;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .prediction-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.75rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .prediction-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .prediction-card p {
+            color: var(--primary-dark);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .main-prediction {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .main-prediction h4 {
+            font-size: 1.25rem;
+        }
+
+        .main-prediction p {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .feature-card {
+            background: var(--card-gradient);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-card h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.25rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .prediction-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .submit-btn {
+                width: 100%;
+                padding: 1rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Crypto Sentry</h1>
+            <p>AI-Powered Fake Website Detection System to Identify and Prevent URL Scams</p>
+        </div>
+
+        <div class="main-card">
+            <form action="/predict" method="POST">
+                <div class="form-group">
+                    <label for="text">Enter Website URL</label>
+                    <textarea 
+                        id="text" 
+                        name="text" 
+                        placeholder="Paste a website URL here to analyze for potential fraud or phishing..."
+                        required>{{ data }}</textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                    Analyze Website
+                </button>
+            </form>
+
+            {% if prediction_result %}
+            <div class="results">
+                <h2>Analysis Results</h2>
+                <div class="prediction-grid">
+                    <div class="prediction-card main-prediction">
+                        <h4>Overall Prediction</h4>
+                        <p>{{ prediction_result }}</p>
+                    </div>
+                    
+                    <div class="prediction-card">
+                        <h4>Naive Bayes</h4>
+                        <p>{{ nb_result }}</p>
+                    </div>
+
+                    <div class="prediction-card">
+                        <h4>Linear SVM</h4>
+                        <p>{{ svm_result }}</p>
+                    </div>
+
+                    <div class="prediction-card">
+                        <h4>Random Forest</h4>
+                        <p>{{ rf_result }}</p>
+                    </div>
+
+                    <div class="prediction-card">
+                        <h4>XGBoost</h4>
+                        <p>{{ xgb_result }}</p>
+                    </div>
+
+                    <div class="prediction-card">
+                        <h4>Logistic Regression</h4>
+                        <p>{{ lr_result }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Multi-Model Protection</h3>
+                <p>Ensemble of advanced algorithms like Random Forest, SVM, and XGBoost ensures maximum accuracy in fake website detection.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Real-time URL Analysis</h3>
+                <p>Instantly scan any website link to detect if it’s genuine or a phishing/fraudulent attempt.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Comprehensive Security Insights</h3>
+                <p>Get detailed, model-by-model insights with easy-to-understand fraud probability results.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
